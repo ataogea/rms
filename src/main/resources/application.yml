@@ -1,0 +1,68 @@
+server:
+  port: 8080
+
+#kerberos认证信息配置
+kerberos:
+  envType: 2      #0生产环境   #1开发环境   2测试环境
+  dev:
+    #开发环境
+    jaas: D:\report_jpa\report\src\main\resources\development\jaas.conf
+    krb5: D:\report_jpa\report\src\main\resources\development\krb5.conf
+    keytab: D:\report_jpa\report\src\main\resources\development\audit.keytab
+    user: audit
+    debug: false
+    #测试环境
+  pro:
+    jaas: C:\Users\王涛\Desktop\config\test\jaas.conf
+    krb5: C:\Users\王涛\Desktop\config\test\krb5.conf
+    keytab: C:\Users\王涛\Desktop\config\test\audit.keytab
+    user: audit
+    debug: false
+    #生产环境
+  tes:
+    jaas: /home/audit/jaas.conf
+    krb5: /home/audit/krb5.conf
+    keytab: /home/audit/app_cust.keytab
+    user : app_cust
+    debug: false
+
+hbase:
+  master: 10.137.224.12:600000,10.137.224.13:600000,10.137.224.14:600000
+  zkHost: 10.137.224.13,10.137.224.14,10.137.224.15
+  zkPort: 2181
+  realTimeInfo:
+    table: test_one
+    familyName: one
+
+
+kafka:
+  producer:
+    #测试环境
+    bootstrap-servers: 10.137.224.16:9092,10.137.224.17:9092,10.137.224.18:9092
+    batch-size: 16785                                   #一次最多发送数据量
+    retries: 3                                          #发送失败后的重复发送次数
+    buffer-memory: 33554432                             #32M批处理缓冲区
+    linger: 1                                           #producer请求可能会延时Nms才会被发送
+    ack: -1                                             #确保每个提交的消息成功
+    kafkaKbStat: 1                                      #等于1时启用kerberos认证
+  consumer:
+    #测试环境
+    bootstrap-servers: 10.137.224.16:9092,10.137.224.17:9092,10.137.224.18:9092
+    #如果存在已经提交的offest时,不管设置为earliest 或者latest 都会从已经提交的offest处开始消费
+    #如果不存在已经提交的offest时,earliest 表示从头开始消费,latest 表示从最新的数据消费,也就是新产生的数据.
+    auto-offset-reset: latest                         #最早未被消费的offset earliest
+    max-poll-records: 100                               #批量消费一次最大拉取的数据量
+    enable-auto-commit: false                           #是否开启自动提交
+    auto-commit-interval: 1000                          #自动提交的间隔时间
+    session-timeout: 60000                              #连接超时时间
+    max-poll-interval: 7200000                            #手动提交设置与poll的心跳数,如果消息队列中没有消息，等待毫秒后，调用poll()方法。如果队列中有消息，立即消费消息，每次消费的消息的多少可以通过max.poll.records配置。
+    max-partition-fetch-bytes: 15728640                 #设置拉取数据的大小,15M
+    kafkaKbStat: 1                                      #等于1时启用kerberos认证
+  listener:
+    batch-listener: true                                #是否开启批量消费，true表示批量消费
+    concurrencys: 1                                     #设置消费的线程数，多个用,隔开，需在代码添加线程factory
+    poll-timeout: 1500                                  #只限自动提交，手动提交不起作用
+    #开发/测试
+    topics: ogg_test_yb                               #topic
+    group: bm_group
+

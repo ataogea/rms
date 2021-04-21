@@ -80,5 +80,4 @@ public class HbaseController {
         BaseResult result = kafkaTest.testReportProducer();
         return result;
     }
-
 }

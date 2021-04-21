@@ -1,2 +1,9 @@
+<<<<<<< HEAD
 .idea/
 rms.iml
+=======
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+/.idea/
+/rms.iml
+>>>>>>> rms-dev
